@@ -26,7 +26,7 @@
 		</property>
 	</bean>
 
-	<!-- 扫描注解Bean，使用直接方式定义bean -->
+	<!-- 扫描注解Bean，使用注解方式定义bean -->
 	<context:component-scan base-package="com.spring.myBeans">
 	</context:component-scan>
 	<context:component-scan base-package="com.myself.mybatis">
