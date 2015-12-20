@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="false">
+
+	<!-- jmxConfigurator /-->
+
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+			%d{yyyy-MM-dd HH:mm:ss.SSS} %c %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+
+    <!-- for ws soap tracing in client side -->
+  	<logger name="org.springframework.ws.client.MessageTracing" additivity="false">
+    	<level value="trace"/>
+    	<appender-ref ref="CONSOLE" />
+  	</logger>
+	<logger name="org.springframework" additivity="false">
+		<level value="error" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="java.sql" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="com" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="org" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<root>
+		<level value="debug" />
+		<level value="info" />
+		<level value="error" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+
+</configuration>
+	

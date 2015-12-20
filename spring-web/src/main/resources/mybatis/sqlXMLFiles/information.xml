@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="gbk" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Information">
+	<!-- 定义缓存，否则每次请求都要读取数据库 -->
+	
+    <resultMap type="hashmap" id="queryUserInformation">
+    	<result property="userID" column="userID"/>
+    	<result property="username" column="username"/>
+    	<result property="password" column="password"/>
+    	<result property="lastLoginTime" column="lastLoginTime"/>
+    	<result property="reserveInfor" column="reserveInfor"/>
+    	<result property="telephone" column="telephone"/>
+    	<result property="address" column="address"/>
+    	<result property="markInfor" column="markInfor"/>
+    </resultMap>
+    
+    <select id="selectUser" parameterType="hashmap" resultMap="queryUserInformation">
+        select * from users
+        <if test="username!=null"> where username = #{username}</if>
+        <if test="password!=null"> and password = #{password}</if> 
+    </select>
+</mapper>

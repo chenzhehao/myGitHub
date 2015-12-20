@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- 注意这个XML 的标头，需要一个 DTD 验证文档 -->
+
+<configuration>
+	<properties resource="mybatis/SqlMap.properties" />
+
+	<!-- environments包含了事务管理和连接池的环境配置 -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 
+			JDBC时，数据不回提交到数据库，原因尚不知道
+			<transactionManager type="JDBC" /> -->
+			<transactionManager type="MANAGED" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- Mybatis提供两种应用实现：XML配置和注解两种方式 
+		1配置主要依赖实体对象的xml文件，将对象以<resultMap>形式注入，并提供给<insert 	> <delete > <select> <update> 语句引用。 
+		2使用注解来的比配置XML文件要简单得多。只需要在接口上添加相应的注解并附上SQL语句就行了，如： 
+			插入语句：@insert(" insert into table_user ..") 
+			修改语句： @update(" update table_user set ....") 
+			删除语句：@delete(" delete from table_user .....") 
+			查询语句：@select(" select * from table_user .....") -->
+	<!-- XML配置：mappers项包含了一系列SQL语句映射定义的XML文件 -->
+	<mappers>
+		<mapper resource="mybatis/sqlXMLFiles/information.xml" />
+	</mappers>
+</configuration>

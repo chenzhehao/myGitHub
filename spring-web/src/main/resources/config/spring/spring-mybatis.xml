@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!--创建jdbc数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="initialSize" value="${initialSize}" />
+		<property name="maxIdle" value="${maxIdle}" />
+		<property name="minIdle" value="${minIdle}" />
+	</bean>
+	
+	
+	<!-- Mybatis提供两种应用实现：XML配置和注解两种方式 
+		1配置主要依赖实体对象的xml文件，将对象以<resultMap>形式注入，并提供给<insert 	> <delete > <select> <update> 语句引用。 
+		2使用注解来的比配置XML文件要简单得多。只需要在接口上添加相应的注解并附上SQL语句就行了，如： 
+			插入语句：@insert(" insert into table_user ..") 
+			修改语句： @update(" update table_user set ....") 
+			删除语句：@delete(" delete from table_user .....") 
+			查询语句：@select(" select * from table_user .....") -->
+	<!-- XML配置：mappers项包含了一系列SQL语句映射定义的XML文件 -->
+		
+	<!-- 使用XML配置 begin -->
+	<!-- 创建SqlSessionFactory，同时指定数据源 -->
+	<bean id="sqlSessionFactoryXML" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 指定sqlMapConfig总配置文件，订制的environment在spring容器中不在生效
+		引入classpath:/mybatis/SqlMapConfig.xml，而不是information.xml
+		否则不能解析文件		 -->
+		<property name="configLocation" value="classpath:/mybatis/SqlMapConfig.xml" />
+		<!--指定实体类映射文件，可以指定同时指定某一包以及子包下面的所有配置文件，mapperLocations和configLocation有一个即可，当需要为实体类指定别名时，可指定configLocation属性，再在mybatis总配置文件中采用mapper引入实体类映射文件 -->
+		<!-- <property name="mapperLocations" value="classpath*:com/xxt/ibatis/dbcp/**/*.xml" 
+			/> -->
+	</bean>
+	<!-- 创建sqlSession，获取后可以进行数据库的操作
+	((org.mybatis.spring.SqlSessionTemplate)ctx.getBean("sqlSession")).selectList("selectUser")-->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryXML" />
+	</bean>
+	<!-- 使用XML配置 end -->
+	
+	
+	<!-- 使用注解配置 begin -->
+	<!-- 创建SqlSessionFactory，同时指定数据源-->       
+	<bean id="sqlSessionFactoryAnnotation" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>    
+	<!--创建数据映射器，数据映射器必须为接口-->  
+	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.myself.mybatis.interfaces.UserService" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryAnnotation" />
+	</bean>
+	<!-- 使用注解配置 end -->
+	
+</beans>

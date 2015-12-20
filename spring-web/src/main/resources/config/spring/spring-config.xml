@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 引入外部属性配置文件 -->
+	<!-- <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
+		<property name="location" value="classpath:/config/spring/properties/peconfigdev.properties" 
+		/> </bean> -->
+	<bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!-- 配置属性文件读取的编码方式utf－8，否则中文乱码 -->
+		<property name="fileEncoding" value="utf-8" />
+		<property name="locations">
+			<list>
+				<value>classpath:/config/spring/properties/peconfigdev.properties
+				</value>
+				<value>classpath:/config/spring/properties/peconfigdev2.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 扫描注解Bean，使用直接方式定义bean -->
+	<context:component-scan base-package="com.spring.myBeans">
+	</context:component-scan>
+	<context:component-scan base-package="com.myself.mybatis">
+	</context:component-scan>
+	<context:component-scan base-package="com.spring.servlets">
+	</context:component-scan>
+	<!-- <context:component-scan base-package="com.spring.myBeans"> <context:include-filter 
+		type="regex" expression="com\.spring\.myBeans\.annotation\..*"/> </context:component-scan> -->
+
+	<!-- 引入的XML文件为使用XML方式定义bean -->
+	<import resource="classpath:config/spring/core.xml" />
+	<import resource="classpath:config/spring/spring-mybatis.xml" />
+
+
+
+
+
+</beans>
