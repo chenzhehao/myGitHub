@@ -39,6 +39,7 @@
 	<!-- 引入的XML文件为使用XML方式定义bean -->
 	<import resource="classpath:config/spring/core.xml" />
 	<import resource="classpath:config/spring/spring-mybatis.xml" />
+	<import resource="classpath:config/spring/spring-struts.xml" />
 
 
 

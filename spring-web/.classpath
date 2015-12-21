@@ -28,6 +28,5 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="/Users/chenzhehao/.m2/repository/org/mybatis/mybatis-spring/1.2.3/mybatis-spring-1.2.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

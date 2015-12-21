@@ -43,15 +43,27 @@ public class SpringTest3 extends SpringMybatisClass{
 		// springTest1.funTest();
 		springTest2.funTest();
 		System.out.println("funTest3=" + properties3);
+		
 //		System.out.println(sqlSession.selectList("selectUser"));
 		System.out.println(this.getSqlSession().selectList("selectUser"));
+		/*
+		 * java.lang.UnsupportedOperationException: Manual commit is not allowed over a Spring managed SqlSession
+		 * java.lang.UnsupportedOperationException: Manual close is not allowed over a Spring managed SqlSession
+		 * SqlSessionTemplate是一个代理类，内部他会为每次请求创建线程安全的sqlsession,并与Spring进行集成.在你的方法调用完毕以后他会自动关闭的。
+		 */
+//		this.getSqlSession().commit();
+//		this.getSqlSession().close();
+		
 //		userMapper.getSqlSession().getMapper(UserService.class).add(4, "mybatis", "test");
 		List<User> usersList = userMapper.getSqlSession().getMapper(UserService.class).getAllUsers();
 		List<UserRoleInfo> userRoleInfo = (List<UserRoleInfo>) userMapper.getSqlSession().getMapper(UserService.class).getUserRoleInfo();
 		System.out.println(usersList);
 		System.out.println(userRoleInfo);
-		//userMapper.getSqlSession().commit();
-		//userMapper.getSqlSession().close();
+		/*
+		 * 同样不允许手动提交和关闭，由代理自动管理
+		 */
+//		userMapper.getSqlSession().commit();
+//		userMapper.getSqlSession().close();
 	}
 
 }
