@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -20,6 +21,17 @@
 		<property name="minIdle" value="${minIdle}" />
 	</bean>
 	
+	<!--创建jdbc数据源 -->
+	<bean id="dataSource2" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url2}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="initialSize" value="${initialSize}" />
+		<property name="maxIdle" value="${maxIdle}" />
+		<property name="minIdle" value="${minIdle}" />
+	</bean>
 	
 	<!-- Mybatis提供两种应用实现：XML配置和注解两种方式 
 		1配置主要依赖实体对象的xml文件，将对象以<resultMap>形式注入，并提供给<insert 	> <delete > <select> <update> 语句引用。 
@@ -47,6 +59,14 @@
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactoryXML" />
 	</bean>
+	
+	<bean id="sqlSessionFactoryXML2" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource2" />
+		<property name="configLocation" value="classpath:/mybatis/SqlMapConfig.xml" />
+	</bean>
+	<bean id="sqlSession2" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryXML2" />
+	</bean>
 	<!-- 使用XML配置 end -->
 	
 	
@@ -62,4 +82,87 @@
 	</bean>
 	<!-- 使用注解配置 end -->
 	
+	
+	<!-- 配置spring的数据库操作事物 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+    </bean>
+    <!-- 编程式事物配置 begin -->
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_REQUIRED" /><!-- 事物传播行为 -->
+		<!-- <property name="propagationBehaviorName" value="PROPAGATION_REQUIRES_NEW" /> --><!-- 事物传播行为 -->
+		<!-- <property name="isolationLevelName" value="ISOLATION_READ_COMMITTED" /> --><!-- 事物隔离级别：ACID -->
+		<property name="isolationLevelName" value="ISOLATION_DEFAULT" /><!-- 事物隔离级别：ACID -->
+		<property name="readOnly" value="false" />
+		<property name="timeout" value="15" />
+	</bean>
+	<!-- 编程式事物配置 end -->
+    
+    <!-- 使用注解配置声明式事物 begin -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+    	p:dataSource-ref="dataSource"/>
+    <!-- <tx:annotation-driven transaction-manager="txManager"/> -->
+    <!-- 使用注解配置声明式事物 end -->
+    
+    
+    <!-- JTA begin -->
+    <!-- config transactionManager atomikos -->  
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"   
+          init-method="init" destroy-method="close">  
+          <property name="forceShutdown" value="true"/>  
+    </bean>  
+    <bean id="atomikoUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">  
+        <property name="transactionTimeout" value="300"></property>  
+    </bean>  
+    <bean id="springTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">  
+        <property name="transactionManager" ref="atomikosTransactionManager"></property>  
+        <property name="userTransaction" ref="atomikoUserTransaction"></property>  
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"  />  
+    
+    <tx:advice id="txAdvice" transaction-manager="txManager">  
+        <tx:attributes>  
+            <tx:method name="execute"/>
+            <tx:method name="fun*" read-only="true"/>
+        </tx:attributes>  
+    </tx:advice>  
+    <aop:config proxy-target-class = "true">  
+        <aop:pointcut expression="execution(* com.myself.mybatis.JTA.*Test.*(..))" id="serviceOperation"/>  
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>  
+    </aop:config> 
+    <!-- JTA end -->
+    
+      <!-- 配置访问sshdb数据源的Spring JDBC模板 -->
+    <bean id="sqlTemplate1" class="org.springframework.jdbc.core.JdbcTemplate">
+       <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <bean id="sqlTemplate2" class="org.springframework.jdbc.core.JdbcTemplate">
+       <property name="dataSource" ref="dataSource2"></property>
+    </bean>
+    
+    
+    
+    <bean id="atomikosTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+       <property name="transactionManager">
+           <ref bean="springTransactionManager" />
+       </property>
+          <property name="transactionAttributes">
+               <props>
+                <prop key="*">PROPAGATION_REQUIRED,-Exception</prop>
+               </props>
+          </property>
+     </bean>
+     <bean id="JTATest2" class="com.myself.mybatis.JTA.JTATest2" scope="prototype">
+				<property name="jTest3" ref="JTATest3" />
+				<property name="jTest4" ref="JTATest4" />
+			</bean>
+    <bean id="atomikosJTAServiceDemo" parent="atomikosTransactionProxy">
+        <property name="target">
+        	 <ref bean="JTATest2" />
+        </property>
+    </bean>
 </beans>

@@ -27,6 +27,11 @@ public class SpringTest3 extends SpringMybatisClass{
 
 	@Autowired
 	private SpringTest1 springTest1;
+	/*
+	 * 1、Spring先查找类型为SpringTest1的bean
+	 * 2、如果查找不到，查找name为springTest1的bean
+	 * 使用@Qualifier制定查找的bean的name
+	 */
 	@Autowired
 	private SpringTest2 springTest2;
 	

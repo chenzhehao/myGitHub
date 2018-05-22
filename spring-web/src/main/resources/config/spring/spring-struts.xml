@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -12,6 +13,32 @@
 	<!-- Spring和struts整合，必须配置scope属性，否则spring一直使用原来的属性，造成验证失败一次后连续失败 -->
 	<bean id="strutsTest" class="com.myself.struts.StrutsTest" scope="prototype">
 		<property name="sqlSession" ref="sqlSession" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="transactionTest2" ref="transactionTest2" />
 	</bean>
 	
+	<bean id="transactionTest2" class="com.myself.mybatis.tx.TransactionTest2" scope="prototype">
+		<property name="sqlSession" ref="sqlSession" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="transactionTest" class="com.myself.mybatis.tx.TransactionTest" scope="prototype">
+		<property name="sqlSession" ref="sqlSession" />
+		<property name="transactionTest2" ref="transactionTest2" />
+	</bean>
+	
+	<bean id="JTATest" class="com.myself.mybatis.JTA.JTATest" scope="prototype">
+		<property name="sqlSession" ref="sqlSession" />
+		<property name="sqlSession2" ref="sqlSession2" />
+		<property name="sqlTemplate1" ref="sqlTemplate1" />
+		<property name="sqlTemplate2" ref="sqlTemplate2" />
+		<property name="jTest2" ref="JTATest2" />
+	</bean>
+	
+	<bean id="JTATest3" class="com.myself.mybatis.JTA.JTATest3" scope="prototype">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<bean id="JTATest4" class="com.myself.mybatis.JTA.JTATest4" scope="prototype">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
 </beans>

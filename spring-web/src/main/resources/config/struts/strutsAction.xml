@@ -4,8 +4,20 @@
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<package name="strutss" extends="struts-default">
-		<action name="login" class="strutsTest">
-			<result name="success">/WEB-INF/zh_CN/loginSuccess.jsp</result>
+		<action name="strutsTest" class="strutsTest">
+			<result name="success">success.jsp</result>
+			<result name="input">/WEB-INF/zh_CN/exceptionTest.jsp</result>
+		</action>
+		<action name="transactionTest" class="transactionTest">
+			<result name="success">success.jsp</result>
+			<result name="input">/WEB-INF/zh_CN/exceptionTest.jsp</result>
+		</action>
+		<action name="JTATest" class="JTATest">
+			<result name="success">success.jsp</result>
+			<result name="input">/WEB-INF/zh_CN/exceptionTest.jsp</result>
+		</action>
+		<action name="JTATest2" class="JTATest2">
+			<result name="success">success.jsp</result>
 			<result name="input">/WEB-INF/zh_CN/exceptionTest.jsp</result>
 		</action>
 	</package>
